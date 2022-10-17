@@ -1,19 +1,30 @@
 from django.shortcuts import render, HttpResponse, redirect
+from main.apps import MainConfig
 
-import pandas as pd
-import numpy as np
-import re
-from sklearn.model_selection import train_test_split
-from eunjeon import Mecab
-from collections import Counter
-from keras.preprocessing.text import Tokenizer
-from keras_preprocessing.sequence import pad_sequences
-from keras.models import load_model
+from .modules.depression_model_init import dm_init
+from .modules.depression_predict import depression_predict
 
- 
-# Create your views here.
+setting_completed = False
+stopwords = None
+tokenizer = None
+model = None
+max_len = None
+
+
+if setting_completed != True:
+    stopwords, tokenizer, model, max_len = dm_init()
+    setting_completed = True
+else:
+    pass
+
 def index(request):
     return render(request, "main/index.html")
+
 def depression(request):
-    
-    return redirect('/')
+    return HttpResponse(testhtml())
+
+def testhtml():
+        page = f'''
+        <h2>{depression_predict('너무 행복하다', stopwords, tokenizer, model, max_len)}</h2>
+        '''
+        return page
