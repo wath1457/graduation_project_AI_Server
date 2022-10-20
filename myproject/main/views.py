@@ -1,6 +1,11 @@
 from tkinter.tix import MAX
 from django.shortcuts import render, HttpResponse, redirect
 from main.apps import MainConfig
+from django.http import JsonResponse
+from django.http import Http404
+import traceback
+import json
+from django.core import serializers
 
 from .modules.depression_model_init import dm_init
 from .modules.depression_predict import depression_predict
@@ -24,7 +29,7 @@ chatbot_tokenizer = None
 C_model = None
 
 if setting_completed != True:
-    # stopwords, depression_tokenizer, model, max_len = dm_init()
+    stopwords, depression_tokenizer, model, max_len = dm_init()
     print('우울증 분석 모델 로드 완료')
     START_TOKEN, END_TOKEN, MAX_LENGTH, chatbot_tokenizer, C_model = cm_init()
     print('챗봇 모델 로드 완료')
@@ -36,40 +41,27 @@ def index(request):
     return render(request, "main/index.html")
 
 def depression(request):
-    return HttpResponse(testhtml())
+    if request.method == 'POST':
+        try:
+            # jsonData = request.POST.getlist('user_sns')
+            body = json.loads(request.body.decode('utf-8'))
+            total_score = 0
+            for sentence in body['user_sns']:
+                depression_score = depression_predict(sentence, stopwords, depression_tokenizer, model, max_len)
+                total_score += depression_score
+            result = round(total_score / len(body['user_sns']))
+            return JsonResponse({'score': result})
+        except:
+            err = traceback.format_exc()
+            raise Http404(str(err))
 
 def chatbot(request):
-    predicted_reply = predict_reply('오늘 뭐하지?',START_TOKEN, END_TOKEN, MAX_LENGTH, chatbot_tokenizer, C_model)
-    return HttpResponse(testhtml2())
-
-def testhtml():
-        page = f'''
-        <h2>{depression_predict('너무 행복하다', stopwords, depression_tokenizer, model, max_len)}</h2>
-        '''
-        return page
-def testhtml2():
-        page = f'''
-        <h2>결과 : {predict_reply('오늘 뭐하지?', START_TOKEN, END_TOKEN, MAX_LENGTH, chatbot_tokenizer, C_model)}</h2>
-        '''
-        return page
-
-
-# def chat():
-#     score = 0
-#     params = request.get_json()
-#     reply = predict_reply(params['user_chat'])
-#     score = predict_emotion(params['user_chat'])
-#     email = params['user_email']
-
-#     headers = {'Content-Type' : 'application/json; charset=utf-8'}
-#     data = {'email' : email, 'score' : score}
-    
-#     # requests.post(url, data=json.dumps(data), headers=headers)
-#     if score == 1:
-#         print("점수 상승(긍정)")
-#         requests.put(emo_url + 'plus/' + email, data=json.dumps(data), headers = headers)
-#     elif score == -1:
-#         print("점수 하락(부정)")
-#         requests.put(emo_url + 'minus/' + email, data=json.dumps(data), headers = headers)
-        
-#     return jsonify({"reply" : reply})
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            user_chat = body['chat']
+            predicted_reply = predict_reply(user_chat, START_TOKEN, END_TOKEN, MAX_LENGTH, chatbot_tokenizer, C_model)
+            return JsonResponse({'reply': predicted_reply})
+        except:
+            err = traceback.format_exc()
+            raise Http404(str(err))

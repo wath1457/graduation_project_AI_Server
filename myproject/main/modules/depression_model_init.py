@@ -1,28 +1,22 @@
 from django.conf import settings
-
+from eunjeon import Mecab
 from keras_preprocessing.sequence import pad_sequences
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from eunjeon import Mecab
+
 from keras.preprocessing.text import Tokenizer
 from keras.models import load_model
 
 
 def dm_init():
-    # global setting_completed
-    # global stopwords
-    # global tokenizer
-    # global model
-    # global max_len
     total_data = pd.read_csv(str(settings.BASE_DIR) + '/dataset/tweets_dataset_18.csv', encoding='cp949')
-
     total_data = total_data.drop(['Datetime', 'Unnamed: 0'], axis = 1)
     total_data.drop_duplicates(subset=['Text'], inplace=True)
     train_data, test_data = train_test_split(total_data, test_size = 0.2, random_state = 42)
 
 
-    train_data['Text'] = train_data['Text'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
+    train_data['Text'] = train_data['Text'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","", regex=True)
     train_data['Text'].replace('', np.nan, inplace=True)
 
     stopwords = []

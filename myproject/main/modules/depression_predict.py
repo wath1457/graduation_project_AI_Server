@@ -11,6 +11,10 @@ def depression_predict(new_sentence, stopwords, tokenizer, model, max_len):
     pad_new = pad_sequences(encoded, maxlen = max_len) # 패딩
     score = float(model.predict(pad_new)) # 예측
     if(score > 0.5):
-        return("{:.2f}% 확률로 우울증 트윗입니다.".format(score * 100))
+        score = score * 100
+        print("{:.2f}% 확률로 우울증 트윗입니다.".format(score))
+        return(score)
     else:
-        return("{:.2f}% 확률로 보통 트윗입니다.".format((1 - score) * 100))
+        score = (1 - score) * 100
+        print("{:.2f}% 확률로 보통 트윗입니다.".format(score))
+        return(score)
