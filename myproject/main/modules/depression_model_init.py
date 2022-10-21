@@ -23,9 +23,9 @@ def dm_init():
     file = open(str(settings.BASE_DIR) + '\\stopword.txt', "r", encoding="utf-8")
     while True:
         line = file.readline()
-        stopwords.append(line.strip('\n'))
-        if not line:
+        if line == '':
             break
+        stopwords.append(line.strip('\n'))
     file.close()
 
     mecab = Mecab() 
