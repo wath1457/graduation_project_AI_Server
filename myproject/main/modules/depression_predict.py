@@ -17,4 +17,4 @@ def depression_predict(new_sentence, stopwords, tokenizer, model, max_len):
     else:
         score = (1 - score) * 100
         print("{:.2f}% 확률로 보통 트윗입니다.".format(score))
-        return(score)
+        return(100-score)
