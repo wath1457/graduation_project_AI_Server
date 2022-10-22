@@ -10,7 +10,7 @@ from keras.models import load_model
 
 
 def dm_init():
-    total_data = pd.read_csv(str(settings.BASE_DIR) + '/dataset/tweets_dataset_18.csv', encoding='cp949')
+    total_data = pd.read_csv(str(settings.BASE_DIR) + '/dataset/tweets_dataset_new.csv', encoding='cp949')
     total_data = total_data.drop(['Datetime', 'Unnamed: 0'], axis = 1)
     total_data.drop_duplicates(subset=['Text'], inplace=True)
     train_data, test_data = train_test_split(total_data, test_size = 0.2, random_state = 42)
@@ -52,6 +52,6 @@ def dm_init():
     tokenizer = Tokenizer(vocab_size, oov_token = 'OOV')
     tokenizer.fit_on_texts(X_train)
 
-    model = load_model(str(settings.BASE_DIR) + '/model/BiLSTM_model_18')
+    model = load_model(str(settings.BASE_DIR) + '/model/BiLSTM_model_new')
     max_len = 55
     return stopwords, tokenizer, model, max_len
