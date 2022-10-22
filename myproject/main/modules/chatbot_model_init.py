@@ -9,7 +9,7 @@ from django.conf import settings
 
 # 데이터 전처리
 def cm_init():
-  data = pd.read_csv(str(settings.BASE_DIR) + '\\dataset\\ChatbotData_Modified.csv')
+  data = pd.read_csv(str(settings.BASE_DIR) + '/dataset/ChatbotData_Modified.csv')
 
   f = open(str(settings.BASE_DIR) + r'/dataset/KETI_office_conversation.txt', "r", encoding='UTF8')
   lines = f.readlines()

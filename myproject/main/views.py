@@ -1,4 +1,3 @@
-from tkinter.tix import MAX
 from django.shortcuts import render, HttpResponse, redirect
 from main.apps import MainConfig
 from django.http import JsonResponse
@@ -29,6 +28,7 @@ chatbot_tokenizer = None
 C_model = None
 
 if setting_completed != True:
+    print('우울증 분석 로드 시작')
     stopwords, depression_tokenizer, model, max_len = dm_init()
     print('우울증 분석 모델 로드 완료')
     START_TOKEN, END_TOKEN, MAX_LENGTH, chatbot_tokenizer, C_model = cm_init()

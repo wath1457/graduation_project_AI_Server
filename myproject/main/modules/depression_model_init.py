@@ -1,10 +1,10 @@
 from django.conf import settings
-from eunjeon import Mecab
 from keras_preprocessing.sequence import pad_sequences
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+from konlpy.tag import Mecab
 from keras.preprocessing.text import Tokenizer
 from keras.models import load_model
 
@@ -20,7 +20,7 @@ def dm_init():
     train_data['Text'].replace('', np.nan, inplace=True)
 
     stopwords = []
-    file = open(str(settings.BASE_DIR) + '\\stopword.txt', "r", encoding="utf-8")
+    file = open(str(settings.BASE_DIR) + '/stopword.txt', "r", encoding="utf-8")
     while True:
         line = file.readline()
         if line == '':

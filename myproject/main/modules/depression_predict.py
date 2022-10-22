@@ -1,5 +1,5 @@
-from eunjeon import Mecab
 from keras_preprocessing.sequence import pad_sequences
+from konlpy.tag import Mecab
 import re
 
 def depression_predict(new_sentence, stopwords, tokenizer, model, max_len):
