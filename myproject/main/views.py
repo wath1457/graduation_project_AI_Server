@@ -47,10 +47,12 @@ def depression(request):
             # jsonData = request.POST.getlist('user_sns')
             body = json.loads(request.body.decode('utf-8'))
             total_score = 0
+            count = 0
             for sentence in body['user_sns']:
                 depression_score = depression_predict(sentence, stopwords, depression_tokenizer, model, max_len)
-                total_score += depression_score
-            result = round(total_score / len(body['user_sns']))
+                if depression_score >= 91:
+                    count += 1
+            result = round(count / len(body['user_sns']))
             return JsonResponse({'score': result})
         except:
             err = traceback.format_exc()
